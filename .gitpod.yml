@@ -1,31 +1,21 @@
-# .gitpod.yml
+# .gitpod.yml (version corrigée)
+
+# NOUVEAU : On spécifie une image qui inclut les outils PostgreSQL
+image: gitpod/workspace-postgres
+
 tasks:
-  - name: Install & Start Services
+  # SIMPLIFIÉ : Cette tâche ne fait plus que préparer la base de données.
+  - name: Setup Database
     init: |
-      # Setup PostgreSQL
-      gp await-port 5432
-      createdb -h localhost -p 5432 -U gitpod -w postgres
-      # Install backend dependencies
-      cd server
-      npm install
-      # Install frontend dependencies
-      cd ../client
-      npm install
-    command: |
-      # Start Backend Server
-      cd server
-      npm run dev &
-      # Start Frontend Server
-      cd ../client
-      npm start
+      gp ports await 5432
+      createdb -h localhost -p 5432 -U gitpod -w postgres || echo "La base de données existe déjà."
+    command:
+      echo "Bienvenue dans l'espace de travail des Ruches ! Suivez les étapes du guide pour continuer."
 
 ports:
-  # Port for React app
   - port: 3000
     onOpen: open-preview
-  # Port for Node.js API
   - port: 5000
     onOpen: ignore
-  # Port for PostgreSQL database
   - port: 5432
     onOpen: ignore
