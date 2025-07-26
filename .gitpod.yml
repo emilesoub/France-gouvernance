@@ -1,0 +1,31 @@
+# .gitpod.yml
+tasks:
+  - name: Install & Start Services
+    init: |
+      # Setup PostgreSQL
+      gp await-port 5432
+      createdb -h localhost -p 5432 -U gitpod -w postgres
+      # Install backend dependencies
+      cd server
+      npm install
+      # Install frontend dependencies
+      cd ../client
+      npm install
+    command: |
+      # Start Backend Server
+      cd server
+      npm run dev &
+      # Start Frontend Server
+      cd ../client
+      npm start
+
+ports:
+  # Port for React app
+  - port: 3000
+    onOpen: open-preview
+  # Port for Node.js API
+  - port: 5000
+    onOpen: ignore
+  # Port for PostgreSQL database
+  - port: 5432
+    onOpen: ignore
